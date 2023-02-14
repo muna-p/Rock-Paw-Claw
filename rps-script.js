@@ -1,59 +1,100 @@
 function getComputerChoice() {
-    let rps_options = ['Rock', 'Paper', 'Scissors'];
+    let rps_options = ['Rock', 'Paw', 'Claw'];
     return rps_options[Math.floor(Math.random()*rps_options.length)];
 }
 
 function playRound(playerSelection, computerSelection) {
-    first_letter = playerSelection.charAt(0).toUpperCase();
-    lower_letters = playerSelection.slice(1).toLowerCase();
-    playerSelectionConverted = first_letter+lower_letters;
-   
-    playerScore = 0;
-    computerScore = 0;
-
-    if ((playerSelectionConverted == 'Rock' && computerSelection == 'Scissors')||(playerSelectionConverted == 'Paper' && computerSelection == 'Rock')||(playerSelectionConverted == 'Scissors' && computerSelection == 'Paper')) {
-        console.log(`You Win! ${playerSelectionConverted} Beats ${computerSelection}.`);
+    if ((playerSelection == 'Rock' && computerSelection == 'Claw')||(playerSelection == 'Paw' && computerSelection == 'Rock')||(playerSelection == 'Claw' && computerSelection == 'Paw')) {
+        divStartReaction.replaceChildren();
+        divStartReaction.textContent = (`You Win! ${playerSelection} Beats ${computerSelection}`);
+        container.appendChild(divStartReaction);
         return [++playerScore,computerScore];
-    } else if ((playerSelectionConverted == 'Rock' && computerSelection == 'Rock')||(playerSelectionConverted == 'Paper' && computerSelection == 'Paper')||(playerSelectionConverted == 'Scissors' && computerSelection == 'Scissors')) {
-        console.log(`It's a Tie! You Chose ${playerSelectionConverted} & Computer Chose ${computerSelection}`);
+    } else if ((playerSelection == 'Rock' && computerSelection == 'Rock')||(playerSelection == 'Paw' && computerSelection == 'Paw')||(playerSelection == 'Claw' && computerSelection == 'Claw')) {        
+        divStartReaction.replaceChildren();
+        divStartReaction.textContent = (`It's a Tie! You Chose ${playerSelection} & Computer Chose ${computerSelection}`);
+        container.appendChild(divStartReaction);
         return [playerScore,computerScore];
-    } else if ((playerSelectionConverted == 'Rock' && computerSelection == 'Paper')||(playerSelectionConverted == 'Paper' && computerSelection == 'Scissors')||(playerSelectionConverted == 'Scissors' && computerSelection == 'Rock')) {
-        console.log(`You Lose! ${computerSelection} Beats ${playerSelectionConverted}.`);
+    } else if ((playerSelection == 'Rock' && computerSelection == 'Paw')||(playerSelection == 'Paw' && computerSelection == 'Claw')||(playerSelection == 'Claw' && computerSelection == 'Rock')) {
+        divStartReaction.replaceChildren();
+        divStartReaction.textContent = (`You Lose! ${computerSelection} Beats ${playerSelection}`);
+        container.appendChild(divStartReaction);
         return [playerScore,++computerScore];
-    } else {
-        console.log (`${playerSelectionConverted} Is Not a Valid Response`);
-        return [playerScore,computerScore];
     }
 }
 
-function game() {
+playerScore = 0;
+computerScore = 0;
 
-    let finalPlayerScore = 0;
-    let finalComputerScore = 0;
+const initial = document.querySelector('body');
+const container = document.querySelector('#container');
+const containerTwo = document.querySelector('#containerTwo');
 
-    for (let i = 0; i < 5; i++) {
-        const playerSelection = prompt('Choose Your Weapon', '');
-        const computerSelection = getComputerChoice();
-        
-        let play = playRound(playerSelection, computerSelection);
-        
-        if (play[0]==1) {
-            finalPlayerScore++;
-        } else if (play[1]==1) {
-            finalComputerScore++;
-        }
+const divStartReaction = document.createElement('div');
+divStartReaction.textContent = `Choose Your Weapon Meow!`;
+container.appendChild(divStartReaction);
 
-        console.log(finalPlayerScore);
-        console.log(finalComputerScore);
-    }
+const divStartScorePlayer = document.createElement('div');
+const divStartScoreComputer = document.createElement('div');
 
-    if (finalComputerScore < finalPlayerScore) {
-        console.log("You Won This Game!");
-    } else if (finalComputerScore > finalPlayerScore) {
-        console.log("The Computer Won This Game!");
-    } else if (finalComputerScore == finalPlayerScore) {
-        console.log("It's a Tie!");
+divStartScorePlayer.textContent = "Player Score: 0";
+divStartScoreComputer.textContent = "Computer Score: 0";
+
+containerTwo.appendChild(divStartScorePlayer);
+containerTwo.appendChild(divStartScoreComputer);
+
+const rockBtn = document.querySelector('#rock');
+const clawBtn = document.querySelector('#claw');
+const pawBtn = document.querySelector('#paw');
+
+rockBtn.addEventListener('click', () => {
+    buttonFunction('Rock'); 
+});
+
+clawBtn.addEventListener('click', () => {
+    buttonFunction('Claw');
+});
+
+pawBtn.addEventListener('click', () => {
+    buttonFunction('Paw');
+});
+
+function gameFive() {
+    if (playerScore == 5) {
+        gameResult("You Won This Game!");
+    } else if (computerScore == 5) {
+        gameResult("Computer Won This Game!");
+    } else if (computerScore == 5 && playerScore == 5) {
+        gameResult("It is a Tie!");
     }
 }
 
-game();
+function buttonFunction(playerChoice) {
+    containerTwo.replaceChildren();
+    playRound(playerChoice,getComputerChoice());
+
+    divStartScorePlayer.textContent = (`Player Score: ${playerScore}`);
+    divStartScoreComputer.textContent = (`Computer Score: ${computerScore}`);
+
+    containerTwo.appendChild(divStartScorePlayer);
+    containerTwo.appendChild(divStartScoreComputer);
+
+    gameFive();
+}
+
+function gameResult(result) {
+    const divNewOne = document.createElement('div');
+    container.replaceChildren();
+    divNewOne.textContent = result;
+
+    container.appendChild(divNewOne);
+
+    const buttonEnd = document.createElement('button');
+    buttonEnd.textContent = ("Play Again");
+    buttonEnd.setAttribute('style', 'padding: 14px 40px; font-size: 24px; background-color: black; color:  white;');    
+
+    container.appendChild(buttonEnd);
+
+    buttonEnd.addEventListener('click', () => {
+        location.reload();
+    });
+}
